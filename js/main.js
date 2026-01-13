@@ -1,8 +1,6 @@
-// Конфигурация API
 const API_BASE_URL = 'http://exam-api-courses.std-900.ist.mospolytech.ru/api';
 const API_KEY = 'f338d6ed-49aa-4add-a9f2-8235870ed3d3';
 
-// Глобальные переменные для хранения данных
 let allCourses = [];
 let allTutors = [];
 let selectedCourse = null;
@@ -10,41 +8,32 @@ let selectedTutor = null;
 let currentCoursePage = 1;
 const ITEMS_PER_PAGE = 5;
 
-// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     loadCourses();
     loadTutors();
     setupEventListeners();
 });
 
-// Настройка обработчиков событий
 function setupEventListeners() {
-    // Поиск курсов
     document.getElementById('course-search-form').addEventListener('submit', function(e) {
         e.preventDefault();
         filterCourses();
     });
 
-    // Поиск репетиторов
     document.getElementById('tutor-search-form').addEventListener('submit', function(e) {
         e.preventDefault();
         filterTutors();
     });
 
-    // Изменение полей в форме заказа курса
     document.getElementById('order-date').addEventListener('change', onOrderDateChange);
     document.getElementById('order-time').addEventListener('change', calculatePrice);
     document.getElementById('order-students').addEventListener('input', calculatePrice);
-    
-    // Чекбоксы опций
     document.querySelectorAll('#order-form input[type="checkbox"]').forEach(function(checkbox) {
         checkbox.addEventListener('change', calculatePrice);
     });
 
-    // Отправка заявки на курс
     document.getElementById('submit-order-btn').addEventListener('click', submitOrder);
 
-    // Форма заявки на репетитора
     document.getElementById('tutor-order-date').addEventListener('change', calculateTutorPrice);
     document.getElementById('tutor-order-time').addEventListener('change', calculateTutorPrice);
     document.getElementById('tutor-order-duration').addEventListener('input', calculateTutorPrice);
@@ -52,7 +41,6 @@ function setupEventListeners() {
     document.getElementById('submit-tutor-order-btn').addEventListener('click', submitTutorOrder);
 }
 
-// Функция для показа уведомлений
 function showNotification(message, type = 'success') {
     const notificationArea = document.getElementById('notification-area');
     const alertId = 'alert-' + Date.now();
@@ -66,8 +54,6 @@ function showNotification(message, type = 'success') {
     `;
     
     notificationArea.insertAdjacentHTML('beforeend', alertHtml);
-    
-    // Автоматическое скрытие через 5 секунд
     setTimeout(function() {
         const alert = document.getElementById(alertId);
         if (alert) {
@@ -76,7 +62,6 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
-// Загрузка списка курсов
 async function loadCourses() {
     try {
         const response = await fetch(`${API_BASE_URL}/courses?api_key=${API_KEY}`);
@@ -100,7 +85,6 @@ async function loadCourses() {
     }
 }
 
-// Отображение списка курсов с пагинацией
 function displayCourses(courses) {
     const coursesList = document.getElementById('courses-list');
     coursesList.innerHTML = '';
@@ -110,8 +94,7 @@ function displayCourses(courses) {
         document.getElementById('courses-pagination').innerHTML = '';
         return;
     }
-    
-    // Вычисляем курсы для текущей страницы
+
     const startIndex = (currentCoursePage - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const coursesToShow = courses.slice(startIndex, endIndex);
@@ -145,8 +128,7 @@ function displayCourses(courses) {
         `;
         coursesList.insertAdjacentHTML('beforeend', courseHtml);
     });
-    
-    // Создаем пагинацию
+
     createPagination(courses.length, currentCoursePage, 'courses');
 }
 
@@ -161,8 +143,7 @@ function createPagination(totalItems, currentPage, type) {
     }
     
     let paginationHtml = '<ul class="pagination">';
-    
-    // Кнопка "Предыдущая"
+
     paginationHtml += `
         <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="changePage(${currentPage - 1}, '${type}'); return false;">Предыдущая</a>
@@ -197,7 +178,6 @@ function changePage(page, type) {
     }
 }
 
-// Фильтрация курсов
 function filterCourses() {
     const searchName = document.getElementById('search-name').value.toLowerCase();
     const searchLevel = document.getElementById('search-level').value;
@@ -216,7 +196,6 @@ function selectCourse(courseId) {
     selectedCourse = allCourses.find(function(c) { return c.id === courseId; });
     selectedTutor = null;
     
-    // Обновляем визуальное выделение
     document.querySelectorAll('#courses-list .list-group-item').forEach(function(item) {
         item.classList.remove('course-selected');
         if (parseInt(item.dataset.courseId) === courseId) {
@@ -224,7 +203,6 @@ function selectCourse(courseId) {
         }
     });
     
-    // Активируем кнопку заявки
     document.getElementById('open-order-btn').disabled = false;
 }
 
@@ -234,18 +212,15 @@ function openOrderModal() {
         showNotification('Сначала выберите курс', 'warning');
         return;
     }
-    
-    // Заполняем форму данными курса
+
     document.getElementById('order-course-id').value = selectedCourse.id;
     document.getElementById('order-course-name').value = selectedCourse.name;
     document.getElementById('order-teacher-name').value = selectedCourse.teacher;
     document.getElementById('order-duration').value = `${selectedCourse.total_length} недель (${selectedCourse.week_length} ч/неделю)`;
-    
-    // Заполняем даты
+
     const dateSelect = document.getElementById('order-date');
     dateSelect.innerHTML = '<option value="">Выберите дату</option>';
-    
-    // Группируем даты
+
     const uniqueDates = [...new Set(selectedCourse.start_dates.map(function(dt) {
         return dt.split('T')[0];
     }))];
@@ -275,12 +250,10 @@ function openOrderModal() {
     
     calculatePrice();
     
-    // Открываем модальное окно
     const modal = new bootstrap.Modal(document.getElementById('orderModal'));
     modal.show();
 }
 
-// Обработка изменения даты в заказе
 function onOrderDateChange() {
     const selectedDate = document.getElementById('order-date').value;
     const timeSelect = document.getElementById('order-time');
@@ -290,8 +263,6 @@ function onOrderDateChange() {
         timeSelect.disabled = true;
         return;
     }
-    
-    // Находим доступные времена для выбранной даты
     const availableTimes = selectedCourse.start_dates
         .filter(function(dt) { return dt.startsWith(selectedDate); })
         .map(function(dt) { return dt.split('T')[1].substring(0, 5); });
@@ -299,7 +270,6 @@ function onOrderDateChange() {
     timeSelect.innerHTML = '<option value="">Выберите время</option>';
     
     availableTimes.forEach(function(time) {
-        // Вычисляем время окончания
         const startHour = parseInt(time.split(':')[0]);
         const endHour = startHour + selectedCourse.week_length;
         const endTime = endHour.toString().padStart(2, '0') + ':00';
@@ -311,8 +281,7 @@ function onOrderDateChange() {
     });
     
     timeSelect.disabled = false;
-    
-    // Вычисляем дату окончания курса
+
     const startDate = new Date(selectedDate);
     const endDate = new Date(startDate);
     endDate.setDate(endDate.getDate() + (selectedCourse.total_length * 7));
@@ -321,7 +290,6 @@ function onOrderDateChange() {
     calculatePrice();
 }
 
-// Расчет стоимости курса
 function calculatePrice() {
     if (!selectedCourse) {
         document.getElementById('total-price').textContent = '0';
@@ -344,8 +312,7 @@ function calculatePrice() {
             isWeekendOrHoliday = 1.5;
         }
     }
-    
-    // Определяем надбавки за время
+
     let morningSurcharge = 0;
     let eveningSurcharge = 0;
     if (selectedTime) {
@@ -356,16 +323,13 @@ function calculatePrice() {
             eveningSurcharge = 1000;
         }
     }
-    
-    // Базовая стоимость по формуле
+
     let basePrice = ((courseFeePerHour * totalHours * isWeekendOrHoliday) + morningSurcharge + eveningSurcharge) * students;
-    
-    // Автоматические скидки/надбавки
+
     let earlyRegistration = false;
     let groupEnrollment = false;
     let intensiveCourse = false;
-    
-    // Скидка за раннюю регистрацию (за месяц вперед)
+
     if (selectedDate) {
         const today = new Date();
         const courseDate = new Date(selectedDate);
@@ -375,12 +339,10 @@ function calculatePrice() {
         }
     }
     
-    // Скидка за групповую запись (5+ человек)
     if (students >= 5) {
         groupEnrollment = true;
     }
     
-    // Надбавка за интенсивный курс (5+ часов в неделю)
     if (selectedCourse.week_length >= 5) {
         intensiveCourse = true;
     }
@@ -390,18 +352,16 @@ function calculatePrice() {
     document.getElementById('group-enrollment-badge').classList.toggle('d-none', !groupEnrollment);
     document.getElementById('intensive-course-badge').classList.toggle('d-none', !intensiveCourse);
     
-    // Применяем скидки/надбавки
     if (intensiveCourse) {
-        basePrice *= 1.2; // +20%
+        basePrice *= 1.2; 
     }
     if (earlyRegistration) {
-        basePrice *= 0.9; // -10%
+        basePrice *= 0.9; 
     }
     if (groupEnrollment) {
-        basePrice *= 0.85; // -15%
+        basePrice *= 0.85; 
     }
     
-    // Пользовательские опции
     if (document.getElementById('option-supplementary').checked) {
         basePrice += 2000 * students;
     }
@@ -421,7 +381,6 @@ function calculatePrice() {
     document.getElementById('total-price').textContent = Math.round(basePrice);
 }
 
-// Отправка заявки на курс
 async function submitOrder() {
     const courseId = document.getElementById('order-course-id').value;
     const dateStart = document.getElementById('order-date').value;
@@ -433,8 +392,6 @@ async function submitOrder() {
         showNotification('Пожалуйста, выберите дату и время', 'warning');
         return;
     }
-    
-    // Определяем автоматические опции
     const today = new Date();
     const courseDate = new Date(dateStart);
     const diffDays = Math.ceil((courseDate - today) / (1000 * 60 * 60 * 24));
@@ -576,11 +533,9 @@ function filterTutors() {
     displayTutors(filteredTutors);
 }
 
-// Выбор репетитора
 function selectTutor(tutorId) {
     selectedTutor = allTutors.find(function(t) { return t.id === tutorId; });
     
-    // Обновляем визуальное выделение
     document.querySelectorAll('#tutors-list tr').forEach(function(row) {
         row.classList.remove('tutor-selected');
         if (parseInt(row.dataset.tutorId) === tutorId) {
@@ -588,11 +543,9 @@ function selectTutor(tutorId) {
         }
     });
     
-    // Заполняем форму
     document.getElementById('tutor-order-id').value = selectedTutor.id;
     document.getElementById('tutor-order-name').value = selectedTutor.name;
     
-    // Устанавливаем минимальную дату - завтра
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     document.getElementById('tutor-order-date').min = tomorrow.toISOString().split('T')[0];
@@ -600,12 +553,10 @@ function selectTutor(tutorId) {
     
     calculateTutorPrice();
     
-    // Открываем модальное окно
     const modal = new bootstrap.Modal(document.getElementById('tutorOrderModal'));
     modal.show();
 }
 
-// Расчет стоимости занятия с репетитором
 function calculateTutorPrice() {
     if (!selectedTutor) {
         document.getElementById('tutor-total-price').textContent = '0';
@@ -617,10 +568,8 @@ function calculateTutorPrice() {
     const duration = parseInt(document.getElementById('tutor-order-duration').value) || 1;
     const students = parseInt(document.getElementById('tutor-order-students').value) || 1;
     
-    // Базовая стоимость
     let price = selectedTutor.price_per_hour * duration;
-    
-    // Множитель за выходные
+
     if (dateStart) {
         const dayOfWeek = new Date(dateStart).getDay();
         if (dayOfWeek === 0 || dayOfWeek === 6) {
@@ -628,7 +577,6 @@ function calculateTutorPrice() {
         }
     }
     
-    // Надбавки за время
     if (timeStart) {
         const hour = parseInt(timeStart.split(':')[0]);
         if (hour >= 9 && hour < 12) {
@@ -638,13 +586,11 @@ function calculateTutorPrice() {
         }
     }
     
-    // Умножаем на количество студентов
     price *= students;
     
     document.getElementById('tutor-total-price').textContent = Math.round(price);
 }
 
-// Отправка заявки на репетитора
 async function submitTutorOrder() {
     const tutorId = document.getElementById('tutor-order-id').value;
     const dateStart = document.getElementById('tutor-order-date').value;

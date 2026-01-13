@@ -1,10 +1,6 @@
-// JavaScript для работы с Яндекс.Картами
-// Дополнительное задание - Карта учебных ресурсов
-
 let myMap;
 let clusterer;
 
-// Данные о местах для изучения языков (примерные данные для Москвы)
 const languageResources = [
     {
         id: 1,
@@ -128,7 +124,6 @@ const languageResources = [
     }
 ];
 
-// Цвета для разных категорий
 const categoryColors = {
     language_club: 'islands#blueEducationIcon',
     courses: 'islands#greenEducationIcon',
@@ -137,7 +132,6 @@ const categoryColors = {
     language_cafe: 'islands#violetFoodIcon'
 };
 
-// Названия категорий на русском
 const categoryNames = {
     language_club: 'Языковой клуб',
     courses: 'Курсы',
@@ -146,18 +140,15 @@ const categoryNames = {
     language_cafe: 'Языковое кафе'
 };
 
-// Инициализация карты после загрузки API
 ymaps.ready(initMap);
 
 function initMap() {
-    // Создаем карту с центром в Москве
     myMap = new ymaps.Map("map", {
         center: [55.751574, 37.573856],
         zoom: 11,
         controls: ['zoomControl', 'searchControl', 'typeSelector', 'fullscreenControl']
     });
 
-    // Создаем кластеризатор для группировки меток
     clusterer = new ymaps.Clusterer({
         preset: 'islands#invertedBlueClusterIcons',
         groupByCoordinates: false,
@@ -166,16 +157,11 @@ function initMap() {
         geoObjectHideIconOnBalloonOpen: false
     });
 
-    // Добавляем все места на карту
     displayPlaces(languageResources);
 
-    // Обработчик кнопки поиска
     document.getElementById('map-search-btn').addEventListener('click', searchPlaces);
-    
-    // Обработчик изменения категории
     document.getElementById('map-category').addEventListener('change', filterByCategory);
     
-    // Поиск по Enter
     document.getElementById('map-search').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             searchPlaces();
@@ -183,15 +169,12 @@ function initMap() {
     });
 }
 
-// Отображение мест на карте
 function displayPlaces(places) {
-    // Очищаем предыдущие метки
     clusterer.removeAll();
     
     const placemarks = [];
     
     places.forEach(function(place) {
-        // Создаем метку
         const placemark = new ymaps.Placemark(place.coords, {
             balloonContentHeader: `<strong>${place.name}</strong>`,
             balloonContentBody: `
@@ -211,12 +194,9 @@ function displayPlaces(places) {
     
     clusterer.add(placemarks);
     myMap.geoObjects.add(clusterer);
-    
-    // Обновляем список мест
     updatePlacesList(places);
 }
 
-// Обновление списка мест под картой
 function updatePlacesList(places) {
     const placesList = document.getElementById('places-list');
     
@@ -250,31 +230,25 @@ function updatePlacesList(places) {
     placesList.innerHTML = html;
 }
 
-// Показать место на карте
 function showOnMap(lat, lng) {
     myMap.setCenter([lat, lng], 15, {
         duration: 500
     });
-    
-    // Прокрутка к карте
     document.getElementById('map').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Поиск мест
 function searchPlaces() {
     const searchQuery = document.getElementById('map-search').value.toLowerCase();
     const category = document.getElementById('map-category').value;
     
     let filteredPlaces = languageResources;
     
-    // Фильтр по категории
     if (category !== 'all') {
         filteredPlaces = filteredPlaces.filter(function(place) {
             return place.category === category;
         });
     }
     
-    // Фильтр по поисковому запросу
     if (searchQuery) {
         filteredPlaces = filteredPlaces.filter(function(place) {
             return place.name.toLowerCase().includes(searchQuery) ||
@@ -284,12 +258,10 @@ function searchPlaces() {
     }
     
     displayPlaces(filteredPlaces);
-    
-    // Если найдено одно место, центрируем на нем
+
     if (filteredPlaces.length === 1) {
         myMap.setCenter(filteredPlaces[0].coords, 15, { duration: 500 });
     } else if (filteredPlaces.length > 1) {
-        // Подгоняем границы карты под все найденные места
         const bounds = clusterer.getBounds();
         if (bounds) {
             myMap.setBounds(bounds, { checkZoomRange: true, duration: 500 });

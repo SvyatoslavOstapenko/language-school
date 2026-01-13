@@ -1,6 +1,3 @@
-/* Основные стили для LinguaSchool */
-
-/* Минимальная высота страницы для прижатия футера */
 body {
     min-height: 100vh;
     display: flex;
@@ -11,7 +8,6 @@ main {
     flex: 1;
 }
 
-/* Стили для выбранного курса/репетитора */
 .course-selected {
     background-color: #cfe2ff !important;
     border-left: 4px solid #0d6efd !important;
@@ -21,12 +17,10 @@ main {
     background-color: #d1e7dd !important;
 }
 
-/* Курсор для кликабельных элементов */
 .list-group-item-action {
     cursor: pointer;
 }
 
-/* Анимация появления уведомлений */
 .notification-toast {
     animation: slideIn 0.3s ease-out;
 }
@@ -42,7 +36,6 @@ main {
     }
 }
 
-/* Стили для карточек преимуществ */
 .card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -52,12 +45,10 @@ main {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Стили для таблицы */
 .table th {
     white-space: nowrap;
 }
 
-/* Аватар репетитора */
 .tutor-avatar {
     width: 50px;
     height: 50px;
@@ -71,28 +62,23 @@ main {
     color: #6c757d;
 }
 
-/* Кнопки действий в таблице */
 .btn-group-actions .btn {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
 
-/* Стили для пагинации */
 .pagination {
     justify-content: center;
 }
 
-/* Модальное окно */
 .modal-header {
     border-bottom: none;
 }
 
-/* Стили для бейджей автоматических опций */
 #auto-options .alert {
     font-size: 0.9rem;
 }
 
-/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
     .navbar-brand span {
         font-size: 1rem;
@@ -112,14 +98,12 @@ main {
     }
 }
 
-/* Стили для загрузки */
 #courses-loading,
 #tutors-loading,
 #orders-loading {
     min-height: 100px;
 }
 
-/* Список курсов */
 #courses-list .list-group-item {
     border-left: 3px solid transparent;
     transition: all 0.2s ease;
@@ -130,7 +114,6 @@ main {
     border-left-color: #0d6efd;
 }
 
-/* Описание в tooltip */
 .course-description {
     max-width: 300px;
     white-space: nowrap;
@@ -138,7 +121,6 @@ main {
     text-overflow: ellipsis;
 }
 
-/* Цена в форме */
 #total-price,
 #tutor-total-price,
 #edit-total-price {
@@ -146,7 +128,6 @@ main {
     font-size: 1.2rem;
 }
 
-/* Футер ссылки */
 footer a {
     text-decoration: none;
     transition: opacity 0.2s;
@@ -156,7 +137,6 @@ footer a:hover {
     opacity: 0.8;
 }
 
-/* Информационные блоки в деталях заказа */
 .details-info-block {
     background-color: #f8f9fa;
     border-radius: 8px;
@@ -169,7 +149,6 @@ footer a:hover {
     margin-bottom: 0.5rem;
 }
 
-/* Скидки и надбавки */
 .discount-badge {
     background-color: #198754;
     color: white;

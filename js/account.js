@@ -2,25 +2,20 @@
 const API_BASE_URL = 'http://exam-api-courses.std-900.ist.mospolytech.ru/api';
 const API_KEY = 'f338d6ed-49aa-4add-a9f2-8235870ed3d3';
 
-// Глобальные переменные
 let allOrders = [];
 let allCourses = [];
 let allTutors = [];
 let currentOrderPage = 1;
 const ITEMS_PER_PAGE = 5;
 
-// Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
     loadData();
     setupEventListeners();
 });
 
-// Настройка обработчиков событий
 function setupEventListeners() {
     document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
     document.getElementById('save-edit-btn').addEventListener('click', saveEdit);
-    
-    // Обработчики изменений в форме редактирования
     document.getElementById('edit-date').addEventListener('change', calculateEditPrice);
     document.getElementById('edit-time').addEventListener('change', calculateEditPrice);
     document.getElementById('edit-students').addEventListener('input', calculateEditPrice);
@@ -29,7 +24,6 @@ function setupEventListeners() {
     });
 }
 
-// Функция для показа уведомлений
 function showNotification(message, type = 'success') {
     const notificationArea = document.getElementById('notification-area');
     const alertId = 'alert-' + Date.now();
@@ -43,8 +37,6 @@ function showNotification(message, type = 'success') {
     `;
     
     notificationArea.insertAdjacentHTML('beforeend', alertHtml);
-    
-    // Автоматическое скрытие через 5 секунд
     setTimeout(function() {
         const alert = document.getElementById(alertId);
         if (alert) {
@@ -53,10 +45,8 @@ function showNotification(message, type = 'success') {
     }, 5000);
 }
 
-// Загрузка данных
 async function loadData() {
     try {
-        // Загружаем курсы и репетиторов для отображения названий
         const [coursesResponse, tutorsResponse, ordersResponse] = await Promise.all([
             fetch(`${API_BASE_URL}/courses?api_key=${API_KEY}`),
             fetch(`${API_BASE_URL}/tutors?api_key=${API_KEY}`),
@@ -85,7 +75,6 @@ async function loadData() {
     }
 }
 
-// Получение информации о курсе или репетиторе
 function getItemInfo(order) {
     if (order.course_id) {
         const course = allCourses.find(function(c) { return c.id === order.course_id; });
@@ -107,7 +96,6 @@ function getItemInfo(order) {
     return { name: 'Неизвестно', teacher: 'Неизвестно', type: 'unknown', item: null };
 }
 
-// Отображение списка заказов с пагинацией
 function displayOrders() {
     const ordersList = document.getElementById('orders-list');
     const ordersTable = document.getElementById('orders-table');
@@ -179,7 +167,6 @@ function createPagination(totalItems, currentPage) {
         </li>
     `;
     
-    // Номера страниц
     for (let i = 1; i <= totalPages; i++) {
         paginationHtml += `
             <li class="page-item ${currentPage === i ? 'active' : ''}">
@@ -187,8 +174,7 @@ function createPagination(totalItems, currentPage) {
             </li>
         `;
     }
-    
-    // Кнопка "Следующая"
+
     paginationHtml += `
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
             <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">Следующая</a>
@@ -199,21 +185,17 @@ function createPagination(totalItems, currentPage) {
     paginationContainer.innerHTML = paginationHtml;
 }
 
-// Смена страницы пагинации
 function changePage(page) {
     currentOrderPage = page;
     displayOrders();
 }
 
-// Показать подробности заказа
 function showDetails(orderId) {
     const order = allOrders.find(function(o) { return o.id === orderId; });
     if (!order) return;
     
     const info = getItemInfo(order);
     const detailsContent = document.getElementById('details-content');
-    
-    // Формируем список опций
     let optionsHtml = '';
     const options = [
         { key: 'early_registration', name: 'Скидка за раннюю регистрацию', type: 'discount', value: '-10%' },
@@ -481,14 +463,12 @@ async function saveEdit() {
     }
 }
 
-// Открыть модальное окно удаления
 function openDeleteModal(orderId) {
     document.getElementById('delete-order-id').value = orderId;
     const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
     modal.show();
 }
 
-// Подтверждение удаления
 async function confirmDelete() {
     const orderId = document.getElementById('delete-order-id').value;
     
