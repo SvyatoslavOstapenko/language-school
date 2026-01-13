@@ -1,0 +1,213 @@
+/* Основные стили для LinguaSchool */
+
+/* Минимальная высота страницы для прижатия футера */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+/* Стили для выбранного курса/репетитора */
+.course-selected {
+    background-color: #cfe2ff !important;
+    border-left: 4px solid #0d6efd !important;
+}
+
+.tutor-selected {
+    background-color: #d1e7dd !important;
+}
+
+/* Курсор для кликабельных элементов */
+.list-group-item-action {
+    cursor: pointer;
+}
+
+/* Анимация появления уведомлений */
+.notification-toast {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Стили для карточек преимуществ */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Стили для таблицы */
+.table th {
+    white-space: nowrap;
+}
+
+/* Аватар репетитора */
+.tutor-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #6c757d;
+}
+
+/* Кнопки действий в таблице */
+.btn-group-actions .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+/* Стили для пагинации */
+.pagination {
+    justify-content: center;
+}
+
+/* Модальное окно */
+.modal-header {
+    border-bottom: none;
+}
+
+/* Стили для бейджей автоматических опций */
+#auto-options .alert {
+    font-size: 0.9rem;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .navbar-brand span {
+        font-size: 1rem;
+    }
+
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+
+    .btn-group-actions .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.75rem;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}
+
+/* Стили для загрузки */
+#courses-loading,
+#tutors-loading,
+#orders-loading {
+    min-height: 100px;
+}
+
+/* Список курсов */
+#courses-list .list-group-item {
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+}
+
+#courses-list .list-group-item:hover {
+    background-color: #f8f9fa;
+    border-left-color: #0d6efd;
+}
+
+/* Описание в tooltip */
+.course-description {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Цена в форме */
+#total-price,
+#tutor-total-price,
+#edit-total-price {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+/* Футер ссылки */
+footer a {
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+footer a:hover {
+    opacity: 0.8;
+}
+
+/* Информационные блоки в деталях заказа */
+.details-info-block {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.details-info-block h6 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+/* Скидки и надбавки */
+.discount-badge {
+    background-color: #198754;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+
+.surcharge-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.25rem;
+    display: inline-block;
+}
+
+/* Стили для карты учебных ресурсов */
+#map {
+    border: 2px solid #dee2e6;
+}
+
+#places-list .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#places-list .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#map-results h5 {
+    color: #495057;
+    border-bottom: 2px solid #0d6efd;
+    padding-bottom: 0.5rem;
+}
